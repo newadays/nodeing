@@ -10,6 +10,8 @@ app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+mongoose.Promise = Promise
+
 var dbUrl = 'mongodb://newadays1:newgben1@ds145828.mlab.com:45828/gbenga-node'
 
 var Message = mongoose.model('Message',{
@@ -30,21 +32,26 @@ app.post('/messages', (req, res) =>{
     // console.log(req.body)
     var message = new Message(req.body)
 
-    message.save((err) => {
-
-        if (err)
-            sendStatus(500)
-
-        messages.push(req.body)
+    message.save().then(() => {
+        console.log('saved')
+        return  Message.findOne({message: 'badword'})
+    })
+    .then( censored =>{
+        if (censored){
+            console.log('censored words found', censored)
+            return Message.remove({_id: censored.id})
+    }
+        // messages.push(req.body)
         io.emit('message', req.body)
         res.sendStatus(200)
-        
-        
-        
     })
-    
+    .catch((err)=>{
+        res.sendStatus(500)
+        return console.error(err)
 
-});
+    })
+})
+
 
 io.on('connection', (socket) =>{
     console.log("user connected")
@@ -57,3 +64,17 @@ mongoose.connect(dbUrl,{ useNewUrlParser: true }, (err) =>{
 var server = http.listen(3000,() => {
     console.log('server is listening on port', server.address().port)
 });
+
+
+
+// Message.findOne({message: 'badword'},(err, censored) => {
+//     if(censored){
+//         console.log('censored words found', censored)
+//         Message.remove({_id: censored.id}, (err) => {
+//             console.log('removed censored message')
+//         })
+//     }
+// })
+// messages.push(req.body)
+// io.emit('message', req.body)
+// res.sendStatus(200)
