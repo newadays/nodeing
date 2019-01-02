@@ -5,15 +5,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 
-<script src="/socket.io/socket.io.js"></script>
+<!-- <script src="/socket.io/socket.io.js"></script> -->
 <div class="container">
     <br>
     <div class="jumbotron">
-        <h1 class="dispaly-4">Send Message</h1>
+        <h1 class="display-4">Send Message</h1>
         <br>
-        <input id="name" class="form-control" placeholder="Name">
+        <input id="_description" class="form-control" placeholder="Name">
         <br>
-        <textarea id="message" class="form-control" placeholder="Message"></textarea>
+        <textarea id="_east" class="form-control" placeholder="region"></textarea>
         <br>
         <button id="send" class="btn btn-danger">Send</button>
     </div>
@@ -22,31 +22,20 @@
     </div>
 </div>
 <script>
-    var socket = io()
+    // var socket = io()
     $(() => {
-        $("#send").click(() => {
-            // addMessage({name:'Tim', message:"hello man"})
-            var message = { name: $("#name").val(), message: $("#message").val()}
-            postMessage(message)
+        $('#send').click(() =>{
+        // addMessage()
         })
         getMessages()
-        // addMessage({name:'Tim', message:"hello man"})
-        // console.log("loaded")
-        socket.on("message",addMessage)
     })
     function addMessage(message) {
-        $("#messages").append(`<h4> ${message.name} <\h4> <p> ${message.message} <\p>`)
+        $("#messages").append(`<h4> ${message._description} <\h4> <p> ${message._east} <\p> <p> ${message._last_updt} <\p> <p> ${message._north} <\p> <p> ${message._region_id} <\p> <p> ${message._south} <\p> <p> ${message._west} <\p> <p> ${message.current_speed} <\p> <p> ${message.region} <\p>`)
     }
-    function getMessages() {
-        $.get('http://localhost:3000/messages', (data)=>{
+    function getMessages(){
+        $.get('http://localhost:3000/traffic', (data) =>{
             // console.log(data)
-            data.forEach(addMessage);
-            // data.forEach(element => {
-            //     addMessage(element)
-            // });
-        })
-    }
-    function postMessage(message) {
-        $.post('http://localhost:3000/messages', message)
-    }
+            data.forEach(addMessage)
+    })
+}
 </script>
