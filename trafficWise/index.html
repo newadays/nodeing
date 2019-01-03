@@ -11,9 +11,9 @@
     <div class="jumbotron">
         <h1 class="display-4">Send Message</h1>
         <br>
-        <input id="_description" class="form-control" placeholder="Name">
+        <input id="region_id" class="form-control" placeholder="numeric region id">
         <br>
-        <textarea id="_east" class="form-control" placeholder="region"></textarea>
+        <textarea id="_description" class="form-control" placeholder="textual description of region"></textarea>
         <br>
         <button id="send" class="btn btn-danger">Send</button>
     </div>
@@ -22,10 +22,13 @@
     </div>
 </div>
 <script>
+
     // var socket = io()
+
     $(() => {
         $('#send').click(() =>{
-        // addMessage()
+        var message = { region_id: $("#region_id").val(), _description: $("#_description").val()}
+        postMessage(message)
         })
         getMessages()
     })
@@ -36,6 +39,12 @@
         $.get('http://localhost:3000/traffic', (data) =>{
             // console.log(data)
             data.forEach(addMessage)
-    })
-}
+        })
+    }
+    function postMessage(message){
+        $.post('http://localhost:3000/trafficstats', message, (err, data)=>{
+            console.log('loaded')
+
+        })
+    }
 </script>
