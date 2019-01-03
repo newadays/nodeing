@@ -8,28 +8,33 @@ app.use(express.static(__dirname))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}))
 
+var message = []
 
-app.get('/traffic', (req,res) =>{
-    Request.get('https://data.cityofchicago.org/resource/m65n-ux8y.json', (err, resp, body)=>{
-        if(err){
-            return console.dir(err)
-        }
-            // console.log(resp.body)
-            // return resp.body
-            res.send(JSON.parse(resp.body))
-    })
+var apiReq = Request.get('https://data.cityofchicago.org/resource/m65n-ux8y.json', message, (err, resp, body)=>{
+    if(err){
+        return console.dir(err)
+    }
+        (JSON.parse(resp.body)).forEach(element => {
+            message.push(element)
+        });
 })
 
-app.post('/trafficstats', (req, res) =>{
-    Request.get(`https://data.cityofchicago.org/resource/m65n-ux8y.json?$where=region_id=${resp.body._region_id}`,{"headers":{"X-App-Token": "baRUbRLnaRUQk8RGJXpA2ezoV"}}, (err, resp, body)=>{
-        if(err){
-            return console.dir(err)
-        }
+app.get('/traffic', (req,res) =>{
+   res.send(message)
+})
 
-        console.log(JSON.parse(resp.body))
-    })
-    console.log(req.body)
-    res.sendStatus(200)
+app.post('/traffic', (req, res) =>{
+    // console.log(req.body)
+    // res.sendStatus(200)
+    message.forEach(element =>{
+            if(element._region_id==req.body.region_id){
+                console.log([element])
+                res.send([element])
+
+            } else if(element._description==req.body.description){
+                res.send([element])
+            }
+        })
 })
 
 var server = app.listen(3000, () =>{

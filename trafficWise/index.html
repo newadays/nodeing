@@ -11,7 +11,7 @@
     <div class="jumbotron">
         <h1 class="display-4">Send Message</h1>
         <br>
-        <input id="region_id" class="form-control" placeholder="numeric region id">
+        <input id="_region_id" class="form-control" placeholder="numeric region id">
         <br>
         <textarea id="_description" class="form-control" placeholder="textual description of region"></textarea>
         <br>
@@ -27,7 +27,8 @@
 
     $(() => {
         $('#send').click(() =>{
-        var message = { region_id: $("#region_id").val(), _description: $("#_description").val()}
+        var message = { region_id: $("#_region_id").val(), description: $("#_description").val()}
+        // var message = {}
         postMessage(message)
         })
         getMessages()
@@ -42,7 +43,7 @@
         })
     }
     function postMessage(message){
-        $.post('http://localhost:3000/trafficstats', message, (err, data)=>{
+        $.post('http://localhost:3000/traffic', message, (err, data)=>{
             console.log('loaded')
 
         })
